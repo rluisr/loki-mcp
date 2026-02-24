@@ -132,7 +132,10 @@ func NewLokiQueryTool() mcp.Tool {
 func HandleLokiQuery(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	// Extract parameters
 	args := request.GetArguments()
-	queryString := args["query"].(string)
+	queryString, ok := args["query"].(string)
+	if !ok || queryString == "" {
+		return nil, fmt.Errorf("required parameter 'query' is missing or empty")
+	}
 
 	// Get Loki URL from request arguments, if not present check environment
 	var lokiURL string
@@ -650,7 +653,10 @@ func HandleLokiLabelNames(ctx context.Context, request mcp.CallToolRequest) (*mc
 func HandleLokiLabelValues(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	// Extract parameters
 	args := request.GetArguments()
-	labelName := args["label"].(string)
+	labelName, ok := args["label"].(string)
+	if !ok || labelName == "" {
+		return nil, fmt.Errorf("required parameter 'label' is missing or empty")
+	}
 
 	// Get Loki URL from request arguments, if not present check environment
 	var lokiURL string
